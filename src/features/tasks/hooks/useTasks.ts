@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Task, CreateTaskDto, UpdateTaskDto } from '../../../shared/types/index.ts'
 import * as tasksApi from '../api/tasksApi.ts'
 
@@ -26,7 +26,7 @@ export const useTasks = () => {
   }, [])
 
   //   タスクの追加
-  const addTask = async (dto: CreateTaskDto) => {
+  const addTask = useCallback(async (dto: CreateTaskDto) => {
     try {
       const newTask = await tasksApi.createTask(dto)
       setTasks((prevTasks) => [...prevTasks, newTask])
@@ -34,10 +34,10 @@ export const useTasks = () => {
       setError(err instanceof Error ? err.message : '不明なエラーが発生しました')
       throw err
     }
-  }
+  }, []) // 関数内で外部変数を参照しないので依存配列は空・setTasksが関数形式なので問題なし
 
   //   タスクの更新
-  const updateTask = async (id: string, dto: UpdateTaskDto) => {
+  const updateTask = useCallback(async (id: string, dto: UpdateTaskDto) => {
     try {
       const updateTask = await tasksApi.updateTask(id, dto)
       setTasks((prevTasks) => prevTasks.map((task) => (task.id === id ? updateTask : task)))
@@ -45,10 +45,10 @@ export const useTasks = () => {
       setError(err instanceof Error ? err.message : 'タスクの更新に失敗しました')
       throw err
     }
-  }
+  }, []) // 関数内で外部変数を参照しないので依存配列は空・setTasksが関数形式なので問題なし
 
   //   タスクの削除
-  const deleteTask = async (id: string) => {
+  const deleteTask = useCallback(async (id: string) => {
     try {
       await tasksApi.deleteTask(id)
       setTasks((prevTasks) => prevTasks.filter((task) => task.id !== id))
@@ -56,5 +56,5 @@ export const useTasks = () => {
       setError(err instanceof Error ? err.message : 'タスクの削除に失敗しました')
       throw err
     }
-  }
+  }, []) // 関数内で外部変数を参照しないので依存配列は空・setTasksが関数形式なので問題なし
 }
