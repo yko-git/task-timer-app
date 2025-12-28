@@ -57,4 +57,13 @@ export const useTasks = () => {
       throw err
     }
   }, []) // 関数内で外部変数を参照しないので依存配列は空・setTasksが関数形式なので問題なし
+
+  return {
+    tasks,
+    isLoading,
+    error,
+    addTask,
+    updateTask,
+    deleteTask,
+  }
 }
