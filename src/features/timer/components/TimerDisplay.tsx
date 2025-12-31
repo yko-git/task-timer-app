@@ -4,7 +4,7 @@ import { TimerControls } from './TimerControls'
 import { formatTime, calculateProgress } from '../models/timer'
 
 export const TimerDisplay = () => {
-  const { timerState, start, pause, reset } = useTimer()
+  const { timerState, start, pause, reset, advanceSession } = useTimer()
 
   // useMemoを使ってフォーマット済み時間を計算
   const formattedTime = useMemo(
@@ -59,18 +59,37 @@ export const TimerDisplay = () => {
       </div>
 
       {/* 完了メッセージ */}
+
       {timerState.status === 'completed' && (
-        <div
-          style={{
-            marginBottom: '16px',
-            padding: '12px',
-            backgroundColor: '#e8f5e9',
-            borderRadius: '4px',
-            color: '#2e7d32',
-          }}
-        >
-          🎉 {timerState.isBreak ? '休憩' : 'セッション'}完了！
-        </div>
+        <>
+          <div
+            style={{
+              marginBottom: '16px',
+              padding: '12px',
+              backgroundColor: '#e8f5e9',
+              borderRadius: '4px',
+              color: '#2e7d32',
+            }}
+          >
+            🎉 {timerState.isBreak ? '休憩' : 'セッション'}完了！
+          </div>
+          {/* 次のセッションへボタン */}
+          <button
+            onClick={advanceSession}
+            style={{
+              padding: '12px 24px',
+              fontSize: '16px',
+              backgroundColor: '#4caf50',
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer',
+              marginBottom: '16px',
+            }}
+          >
+            次のセッションへ
+          </button>
+        </>
       )}
 
       {/* 操作ボタン */}
