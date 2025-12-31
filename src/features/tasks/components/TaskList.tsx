@@ -1,12 +1,26 @@
 import { useMemo, useState } from 'react'
-import { useTasks } from '../hooks/useTasks'
+import { Task, CreateTaskDto, UpdateTaskDto } from '@/shared/types'
+import { TaskFilter, filterTasks, getTaskStats } from '../models/task'
 import { TaskForm } from './TaskForm'
 import { TaskItem } from './TaskItem'
-import { TaskFilter, filterTasks, getTaskStats } from '../models/task'
 
-export const TaskList = () => {
-  //   useTasksカスタムフックから必要な各プロパティを取り出す
-  const { tasks, isLoading, error, addTask, updateTask, deleteTask } = useTasks()
+interface TaskListProps {
+  tasks: Task[]
+  isLoading: boolean
+  error: string | null
+  addTask: (dto: CreateTaskDto) => Promise<void>
+  updateTask: (id: string, dto: UpdateTaskDto) => Promise<void>
+  deleteTask: (id: string) => Promise<void>
+}
+
+export const TaskList = ({
+  tasks,
+  isLoading,
+  error,
+  addTask,
+  updateTask,
+  deleteTask,
+}: TaskListProps) => {
   //   フィルター状態を管理
   const [filter, setFilter] = useState<TaskFilter>('all')
   const filterdTasks = useMemo(() => filterTasks(tasks, filter), [tasks, filter])
@@ -72,7 +86,7 @@ export const TaskList = () => {
         <p>全タスク：{stats.total}件</p>
         <p>完了：{stats.completed}件</p>
         <p>未完了：{stats.active}件</p>
-        <p>完了率：{stats.completionRate}件</p>
+        <p>完了率：{stats.completionRate}%</p>
       </div>
 
       {filterdTasks.length === 0 ? (
