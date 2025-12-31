@@ -1,11 +1,25 @@
 import { useMemo } from 'react'
-import { useTimer } from '../hooks/useTimer'
 import { TimerControls } from './TimerControls'
 import { formatTime, calculateProgress } from '../models/timer'
+import { TimerConfig, TimerState } from '@/shared/types'
 
-export const TimerDisplay = () => {
-  const { timerState, start, pause, reset, advanceSession } = useTimer()
+interface TimerDisplayProps {
+  timerState: TimerState
+  config: TimerConfig
+  start: () => void
+  pause: () => void
+  reset: () => void
+  advanceSession: () => void
+}
 
+export const TimerDisplay = ({
+  timerState,
+  config,
+  start,
+  pause,
+  reset,
+  advanceSession,
+}: TimerDisplayProps) => {
   // useMemoを使ってフォーマット済み時間を計算
   const formattedTime = useMemo(
     () => formatTime(timerState.remainingSeconds),
