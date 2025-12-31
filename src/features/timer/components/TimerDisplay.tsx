@@ -59,19 +59,6 @@ export const TimerDisplay = () => {
       </div>
 
       {/* 完了メッセージ */}
-      {timerState.status === 'completed' && (
-        <div
-          style={{
-            marginBottom: '16px',
-            padding: '12px',
-            backgroundColor: '#e8f5e9',
-            borderRadius: '4px',
-            color: '#2e7d32',
-          }}
-        >
-          🎉 {timerState.isBreak ? '休憩' : 'セッション'}完了！
-        </div>
-      )}
 
       {timerState.status === 'completed' && (
         <>
