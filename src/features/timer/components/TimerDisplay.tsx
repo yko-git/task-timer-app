@@ -1,11 +1,10 @@
 import { useMemo } from 'react'
 import { TimerControls } from './TimerControls'
 import { formatTime, calculateProgress } from '../models/timer'
-import { Task, TimerConfig, TimerState } from '@/shared/types'
+import { Task, TimerState } from '@/shared/types'
 
 interface TimerDisplayProps {
   timerState: TimerState
-  config: TimerConfig
   activeTask?: Task | null
   start: () => void
   pause: () => void
@@ -15,7 +14,6 @@ interface TimerDisplayProps {
 
 export const TimerDisplay = ({
   timerState,
-  config,
   start,
   pause,
   reset,

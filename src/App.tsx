@@ -29,7 +29,6 @@ function App() {
       <div style={{ flex: 1 }}>
         <TimerDisplay
           timerState={timerData.timerState}
-          config={timerData.config}
           start={timerData.start}
           pause={timerData.pause}
           reset={timerData.reset}
