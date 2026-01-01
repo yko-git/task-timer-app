@@ -11,6 +11,8 @@ interface TaskListProps {
   addTask: (dto: CreateTaskDto) => Promise<void>
   updateTask: (id: string, dto: UpdateTaskDto) => Promise<void>
   deleteTask: (id: string) => Promise<void>
+  activeTaskId: string | null
+  onSelectTask: (taskId: string) => void
 }
 
 export const TaskList = ({
@@ -20,6 +22,8 @@ export const TaskList = ({
   addTask,
   updateTask,
   deleteTask,
+  activeTaskId,
+  onSelectTask,
 }: TaskListProps) => {
   //   フィルター状態を管理
   const [filter, setFilter] = useState<TaskFilter>('all')
@@ -94,7 +98,14 @@ export const TaskList = ({
       ) : (
         <ul style={{ listStyle: 'none', padding: 0 }}>
           {filterdTasks.map((task) => (
-            <TaskItem key={task.id} task={task} onUpdate={updateTask} onDelete={deleteTask} />
+            <TaskItem
+              key={task.id}
+              task={task}
+              onUpdate={updateTask}
+              onDelete={deleteTask}
+              isActive={activeTaskId === task.id}
+              onSelect={onSelectTask}
+            />
           ))}
         </ul>
       )}
