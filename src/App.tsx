@@ -18,7 +18,7 @@ function App() {
   const handleSelectTask = (taskId: string) => {
     setActiveTaskId(taskId)
     // タイマーが停止中なら自動で開始
-    if (timerData.timerState.status !== 'idle') {
+    if (timerData.timerState.status === 'idle') {
       timerData.start()
     }
   }
@@ -48,7 +48,7 @@ function App() {
           updateTask={tasksData.updateTask}
           deleteTask={tasksData.deleteTask}
           activeTaskId={activeTaskId}
-          handleSelectTask={handleSelectTask}
+          onSelectTask={handleSelectTask}
         />
       </div>
     </div>
