@@ -6,7 +6,7 @@ import { Task, TimerConfig, TimerState } from '@/shared/types'
 interface TimerDisplayProps {
   timerState: TimerState
   config: TimerConfig
-  activeTask: Task | null
+  activeTask?: Task | null
   start: () => void
   pause: () => void
   reset: () => void
