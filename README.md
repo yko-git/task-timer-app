@@ -1,73 +1,105 @@
-# React + TypeScript + Vite
+# Task Timer App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+ポモドーロタイマーとタスク管理を統合したアプリケーション
 
-Currently, two official plugins are available:
+## 概要
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+このアプリケーションは、Feature-based Architectureを採用し、タスク管理とポモドーロタイマーを統合したWebアプリです。React + TypeScript + MSWで構築されており、設計の明確性と保守性を重視しています。
 
-## React Compiler
+## 使用技術
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **フロントエンド**: React 18, TypeScript
+- **ビルドツール**: Vite
+- **モック**: MSW (Mock Service Worker)
+- **テスト**: Vitest, Testing Library
+- **状態管理**: React Hooks (useState, useCallback, useMemo)
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 設計思想
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### 1. Feature-based Architecture採用理由
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+**採用理由**
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+機能ごとにコードを整理することで、以下のメリットを実現：
+
+- **拡張性**:　新機能追加時に既存コードへの影響を最小化
+- **保守性**:　関連するコードが同じディレクトリに集約され、変更箇所が明確
+- **チーム開発**:　機能単位で並行開発が可能
+
+```
+src/features/
+├── tasks/           # タスク管理機能
+│   ├── api/        # API通信
+│   ├── models/     # ビジネスロジック
+│   ├── hooks/      # カスタムフック
+│   └── components/ # UI
+└── timer/          # タイマー機能
+    ├── models/
+    ├── hooks/
+    └── components/
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+各機能が独立しており、`tasks`機能の変更が`timer`機能に影響しない設計。
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+**効果**
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- 新しいタスク機能を追加する際、`tasks/`ディレクトリ内だけで完結
+- 機能削除時も該当ディレクトリを削除するだけで対応可能
+- コードレビュー時に変更範囲が明確
+
+### 2. 依存方向の徹底（UI → hooks → model → api）
+
+**設計方針**
+
+依存方向を「外側（UI）→ 内側（api/model）」に統一することで、変更の影響を最小化。
+
+- **UI層（デザイン）**: 頻繁に変更される
+- **ビジネスロジック層（計算式）**: 安定している
+
+逆方向の依存（内側 → 外側）を許すと、UIを変えるたびにビジネスロジックの修正が必要になり、影響範囲が広がる。
+
+**実装例**
+
+各層は下の層のみに依存し、上の層を知らない：
+
 ```
+TaskList (UI)
+  ↓ 使う
+useTasks (hooks)
+  ↓ 使う
+tasksApi (api)
+  ↓ 使う
+Task型、バリデーション (model)
+```
+
+具体的には：
+
+- `TaskList` は `useTasks` を呼び出すが、`tasksApi` を直接知らない
+- `useTasks` は `tasksApi` を呼び出すが、`TaskList` を知らない
+- `tasksApi` は `Task` 型を使うが、hooks を知らない
+
+**効果**
+
+- **変更の局所化**: UI変更時、hooks層以下は影響を受けない
+- **再利用性**: hooks や model は他のコンポーネントでも使える
+- **テスト容易性**: 各層を独立してテストできる
+
+### 3. useMemo/useCallbackによるパフォーマンス最適化
+
+### 4. カスタムフックによる関心の分離
+
+### 5. 責務の明確化と単一責任の原則
+
+---
+
+## フォルダ構造
+
+---
+
+## セットアップ
+
+---
+
+## 技術的なハイライト
