@@ -46,8 +46,10 @@ describe('useTasks', () => {
       completed: false,
     })
 
-    // タスクが増えている
-    expect(result.current.tasks.length).toBe(initialCount + 1)
+    // 状態更新を待つ（追加）
+    await waitFor(() => {
+      expect(result.current.tasks.length).toBe(initialCount + 1)
+    })
 
     // 追加したタスクが存在する
     const addedTask = result.current.tasks.find((task) => task.title === 'テスト用タスク')
