@@ -88,6 +88,46 @@ Task型、バリデーション (model)
 
 ### 3. useMemo/useCallbackによるパフォーマンス最適化
 
+**最適化の方針**
+
+関数・値をReactのメモリに保存することで、親コンポーネントが再レンダリングされた時の不要な再計算・再レンダリングを削減。
+
+**useMemo の使用例：filteredTasks**
+
+```typescript
+const filteredTasks = useMemo(() => filterTasks(tasks, filter), [tasks, filter])
+```
+
+`filterTasks` は配列をループして絞り込む処理であり、タスク数が多いと計算コストが高い。
+
+- **再計算が必要**: `tasks` または `filter` が変わった時のみ
+- **再計算が不要**: それ以外の再レンダリング（例：統計表示の開閉）
+
+useMemo により、依存配列 `[tasks, filter]` が変わらない限り、前回の計算結果を再利用。
+
+**useCallback の使用例：addTask**
+
+```typescript
+const addTask = useCallback(async (dto: CreateTaskDto) => {
+  const newTask = await tasksApi.createTask(dto)
+  setTasks((prevTasks) => [...prevTasks, newTask])
+}, [])
+```
+
+この関数は子コンポーネント（TaskForm）に props として渡される。
+
+- **useCallback なし**: 親が再レンダリングされるたびに新しい関数が生成され、子も再レンダリング
+- **useCallback あり**: 同じ関数オブジェクトを保持し、子の不要な再レンダリングを防ぐ
+
+依存配列が `[]` なのは、関数形式の `setState` を使用しているため、外部変数に依存していないから。
+
+**最適化の効果**
+
+- useMemo: 4箇所（filteredTasks, stats, formattedTime, progress）
+- useCallback: 7箇所（addTask, updateTask, deleteTask, start, pause, reset, advanceSession）
+
+タスク数が100件を超えるような場合でも、スムーズな操作感を維持。
+
 ### 4. カスタムフックによる関心の分離
 
 ### 5. 責務の明確化と単一責任の原則
