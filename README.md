@@ -130,6 +130,67 @@ const addTask = useCallback(async (dto: CreateTaskDto) => {
 
 ### 4. カスタムフックによる関心の分離
 
+**設計方針**
+
+状態管理とビジネスロジックをカスタムフックに切り出すことで、コンポーネント間でロジックを共有し、コードの重複を削減。
+
+**実装例**
+
+**useTasks の責務：**
+
+```typescript
+const { tasks, isLoading, error, addTask, updateTask, deleteTask } = useTasks()
+```
+
+- タスクの状態管理（tasks, isLoading, error）
+- CRUD操作の提供（addTask, updateTask, deleteTask）
+- API通信の詳細を隠蔽
+
+コンポーネントは「タスクを追加する」という操作だけを知り、API呼び出しの詳細は知らなくて良い。
+
+**useTimer の責務：**
+
+```typescript
+const { timerState, start, pause, reset, advanceSession } = useTimer()
+```
+
+- タイマーの状態管理（timerState, intervalRef）
+- タイマー制御の提供（start, pause, reset）
+- setInterval による時間管理ロジックを隠蔽
+
+**カスタムフックを使わない場合の問題**
+
+```typescript
+// ❌ カスタムフックなしの例
+function TaskList() {
+  const [tasks, setTasks] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    // 50行のAPI呼び出しロジック...
+  }, [])
+
+  const addTask = async () => {
+    // 30行の追加ロジック...
+  }
+
+  // UIとロジックが混在し、200行超のコンポーネントに...
+}
+```
+
+問題点：
+
+- ロジックとUIが混在して読みにくい
+- コンポーネントが肥大化（200行超）
+- 他のコンポーネントで再利用できない
+- ロジック部分だけをテストできない
+
+**効果**
+
+- コンポーネントは30-50行程度に抑えられ、UIに集中
+- ロジックは独立してテスト可能
+- 複数のコンポーネントで同じロジックを再利用
+
 ### 5. 責務の明確化と単一責任の原則
 
 ---
