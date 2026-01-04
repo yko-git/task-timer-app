@@ -252,6 +252,52 @@ export const TaskItem = ({ task, onUpdate, onDelete, isActive, onSelect }) => {
 
 ## フォルダ構造
 
+```
+src/
+├── features/              # 機能ごとに整理
+│   ├── tasks/            # タスク管理機能
+│   │   ├── api/          # API通信層
+│   │   │   └── tasksApi.ts
+│   │   ├── models/       # ビジネスロジック・型定義
+│   │   │   └── task.ts
+│   │   ├── hooks/        # カスタムフック
+│   │   │   └── useTasks.ts
+│   │   └── components/   # UI層
+│   │       ├── TaskList.tsx
+│   │       ├── TaskItem.tsx
+│   │       └── TaskForm.tsx
+│   │
+│   └── timer/            # タイマー機能
+│       ├── models/
+│       │   └── timer.ts
+│       ├── hooks/
+│       │   └── useTimer.ts
+│       └── components/
+│           ├── TimerDisplay.tsx
+│           └── TimerControls.tsx
+│
+├── shared/               # 共通モジュール
+│   ├── types/           # 共通型定義
+│   │   └── index.ts
+│   └── utils/           # ユーティリティ関数
+│       └── format.ts
+│
+├── mocks/               # MSW設定
+│   ├── handlers.ts     # APIモックハンドラー
+│   ├── browser.ts      # ブラウザ用設定
+│   ├── server.ts       # テスト用設定
+│   └── data.ts         # モックデータ
+│
+└── test/               # テスト設定
+    └── setup.ts
+```
+
+**特徴**
+
+- 機能ごとに完全に分離（tasks, timer）
+- 各機能内で依存方向を徹底（api → model → hooks → components）
+- 共通コードは shared に集約
+
 ---
 
 ## セットアップ
