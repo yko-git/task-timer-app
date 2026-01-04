@@ -346,6 +346,119 @@ npm test
 
 ## 技術的なハイライト
 
+### useMemo/useCallback の使用箇所
+
+**useMemo（4箇所）**
+
+```typescript
+// 1. フィルタリング済みタスクリスト
+const filteredTasks = useMemo(() => filterTasks(tasks, filter), [tasks, filter])
+
+// 2. タスク統計の計算
+const stats = useMemo(() => getTaskStats(tasks), [tasks])
+
+// 3. タイマー表示フォーマット
+const formattedTime = useMemo(
+  () => formatTime(timerState.remainingSeconds),
+  [timerState.remainingSeconds]
+)
+
+// 4. タイマー進捗率の計算
+const progress = useMemo(
+  () => calculateProgress(timerState.remainingSeconds, timerState.totalSeconds),
+  [timerState.remainingSeconds, timerState.totalSeconds]
+)
+```
+
+**useCallback（7箇所）**
+
+タスク操作（3箇所）：
+
+- `addTask` - タスク追加
+- `updateTask` - タスク更新
+- `deleteTask` - タスク削除
+
+タイマー操作（4箇所）：
+
+- `start` - タイマー開始
+- `pause` - タイマー停止
+- `reset` - タイマーリセット
+- `advanceSession` - 次のセッションへ
+
+### State Lifting（状態の巻き上げ）
+
+タスクとタイマーの連携のため、App.tsx で両方の状態を管理：
+
+```typescript
+function App() {
+  const tasksData = useTasks()
+  const timerData = useTimer()
+  const [activeTaskId, setActiveTaskId] = useState<string | null>(null)
+
+  // タスク選択時にタイマー自動起動
+  const handleSelectTask = (taskId: string) => {
+    setActiveTaskId(taskId)
+    if (timerData.timerState.status === 'idle') {
+      timerData.start()
+    }
+  }
+
+  return (
+    <>
+      <TimerDisplay {...timerData} activeTask={activeTask} />
+      <TaskList {...tasksData} onSelectTask={handleSelectTask} />
+    </>
+  )
+}
+```
+
+### MSW によるモックAPI
+
+バックエンドなしで開発・テストが可能：
+
+```typescript
+// handlers.ts
+export const handlers = [
+  http.get('/api/tasks', () => {
+    const tasks = getTasks() // LocalStorageから取得
+    return HttpResponse.json(tasks)
+  }),
+
+  http.post('/api/tasks', async ({ request }) => {
+    const body = await request.json()
+    const newTask = { id: generateId(), ...body }
+    saveTasks([...getTasks(), newTask])
+    return HttpResponse.json(newTask, { status: 201 })
+  }),
+]
+```
+
+LocalStorageと連携することで、リロード後もデータが永続化される。
+
+### テスト戦略
+
+カスタムフックの単体テストを実装：
+
+```typescript
+it('タスクを追加できる', async () => {
+  const { result } = renderHook(() => useTasks())
+
+  await waitFor(() => {
+    expect(result.current.isLoading).toBe(false)
+  })
+
+  await result.current.addTask({ title: 'テスト用タスク', completed: false })
+
+  await waitFor(() => {
+    expect(result.current.tasks).toContainEqual(
+      expect.objectContaining({ title: 'テスト用タスク' })
+    )
+  })
+})
+```
+
+MSWのテスト用サーバーと連携し、実際のAPI呼び出しに近い形でテスト。
+
 ```
 
 ```
