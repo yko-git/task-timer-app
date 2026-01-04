@@ -193,7 +193,62 @@ function TaskList() {
 
 ### 5. 責務の明確化と単一責任の原則
 
----
+**設計方針**
+
+単一責任の原則：1つのモジュールは1つの責務のみを持つべき。
+
+責務を分離することで：
+
+- 変更箇所が明確になり、修正が容易
+- 読む範囲が限定され、理解しやすい
+- 変更の影響をモジュール内に閉じ込められる
+
+**各層の責務**
+
+| 層          | 責務                                                 | やらないこと                        |
+| ----------- | ---------------------------------------------------- | ----------------------------------- |
+| **UI層**    | UIを表示し、ユーザー操作を受け取る                   | ビジネスロジック、状態管理、API通信 |
+| **Hooks層** | 状態管理とビジネスロジック                           | UI表示、API通信の実装詳細           |
+| **Model層** | 型定義、バリデーション、データ変換・計算（純粋関数） | 状態管理、API通信、UI表示           |
+| **API層**   | HTTP通信、エラーハンドリング                         | 状態管理、ビジネスロジック、UI表示  |
+
+**具体例：TaskItem コンポーネント**
+
+```typescript
+export const TaskItem = ({ task, onUpdate, onDelete, isActive, onSelect }) => {
+  const handleToggle = () => onUpdate(task.id, { completed: !task.completed })
+  const handleDelete = () => { /* ... */ }
+  const handleSelect = () => onSelect(task.id)
+
+  return (
+    <li onClick={handleSelect}>
+      <input type="checkbox" onChange={handleToggle} />
+      <span>{task.title}</span>
+      <button onClick={handleDelete}>削除</button>
+    </li>
+  )
+}
+```
+
+**TaskItem の責務：**
+
+- props を受け取り、タスクを表示する（UI層としての責務）
+- ユーザー操作を受け付け、親コンポーネントに伝える（イベントハンドリング）
+- 完了状態に応じてスタイルを変化させる（表示ロジック）
+
+**TaskItem がやらないこと：**
+
+- タスクの更新・削除処理の実装（親から受け取った関数を呼ぶだけ）
+- API通信（hooks層に委譲）
+- 状態管理（親コンポーネントが管理）
+
+これにより、TaskItem は「1つのタスクを表示する」という単一の責務に集中できる。
+
+**効果**
+
+- コンポーネントが小さく、理解しやすい（30-50行程度）
+- 各層を独立して修正・テスト可能
+- バグの影響範囲が限定される
 
 ## フォルダ構造
 
@@ -204,3 +259,7 @@ function TaskList() {
 ---
 
 ## 技術的なハイライト
+
+```
+
+```
