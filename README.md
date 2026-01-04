@@ -302,6 +302,46 @@ src/
 
 ## セットアップ
 
+### 必要な環境
+
+- Node.js 18以上
+- npm または yarn
+
+### インストール
+
+```bash
+# リポジトリをクローン
+git clone <repository-url>
+cd task-timer-app
+
+# 依存関係をインストール
+npm install
+```
+
+### 開発サーバーの起動
+
+```bash
+npm run dev
+```
+
+ブラウザで `http://localhost:5173` を開く
+
+### その他のコマンド
+
+```bash
+# ビルド
+npm run build
+
+# リント
+npm run lint
+
+# フォーマット
+npm run format
+
+# テスト
+npm test
+```
+
 ---
 
 ## 技術的なハイライト
