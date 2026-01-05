@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { renderHook, waitFor } from '@testing-library/react'
 import { useTasks } from './useTasks'
+import { act } from 'react'
 
 describe('useTasks', () => {
   beforeEach(() => {
@@ -41,9 +42,11 @@ describe('useTasks', () => {
     const initialCount = result.current.tasks.length
 
     // 新しいタスクを追加
-    await result.current.addTask({
-      title: 'テスト用タスク',
-      completed: false,
+    await act(async () => {
+      result.current.addTask({
+        title: 'テスト用タスク',
+        completed: false,
+      })
     })
 
     // 状態更新を待つ（追加）

@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect } from 'vitest'
 import { renderHook } from '@testing-library/react'
 import { useTimer } from './useTimer'
 import { act } from 'react'
