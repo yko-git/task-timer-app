@@ -1,3 +1,9 @@
+# Task Timer App
+
+ポモドーロタイマーとタスク管理を統合したアプリケーション
+
+**デモ:** https://task-timer-app-seven.vercel.app/
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
@@ -71,3 +77,14 @@ export default defineConfig([
   },
 ])
 ```
+
+# 学んだこと
+
+- Feature-based Architecture
+- クリーンアーキテクチャの依存方向
+- カスタムフックによる関心の分離
+- パフォーマンス最適化（useMemo/useCallback）
+- 責務の明確化
+- State Lifting
+- MSW によるモック開発
+- Vitestでのテスト
