@@ -2,6 +2,8 @@
 
 ポモドーロタイマーとタスク管理を統合したアプリケーション
 
+**デモ:** https://task-timer-app-seven.vercel.app/
+
 ## 概要
 
 このアプリケーションは、Feature-based Architectureを採用し、タスク管理とポモドーロタイマーを統合したWebアプリです。React + TypeScript + MSWで構築されており、設計の明確性と保守性を重視しています。
@@ -459,6 +461,13 @@ it('タスクを追加できる', async () => {
 
 MSWのテスト用サーバーと連携し、実際のAPI呼び出しに近い形でテスト。
 
-```
+# 学んだこと
 
-```
+- Feature-based Architecture
+- クリーンアーキテクチャの依存方向
+- カスタムフックによる関心の分離
+- パフォーマンス最適化（useMemo/useCallback）
+- 責務の明確化
+- State Lifting
+- MSW によるモック開発
+- Vitestでのテスト
