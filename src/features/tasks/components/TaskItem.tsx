@@ -23,11 +23,6 @@ export const TaskItem = ({ task, onUpdate, onDelete, isActive, onSelect }: TaskI
     }
   }
 
-  const handleUpdate = () => {
-    onUpdate(task.id, { completed: false })
-    setIsEditing(true)
-  }
-
   const handleSelect = () => {
     onSelect(task.id)
   }
@@ -56,7 +51,7 @@ export const TaskItem = ({ task, onUpdate, onDelete, isActive, onSelect }: TaskI
             style={{ marginLeft: '8px', color: 'red' }}
             onClick={(e) => {
               e.stopPropagation()
-              // setEditedTitle(editedTitle)
+              onUpdate(task.id, { title: editedTitle })
               setIsEditing(false)
             }}
           >
@@ -66,6 +61,7 @@ export const TaskItem = ({ task, onUpdate, onDelete, isActive, onSelect }: TaskI
             style={{ marginLeft: '8px', color: 'red' }}
             onClick={(e) => {
               e.stopPropagation()
+              setEditedTitle(task.title)
               setIsEditing(false)
             }}
           >
@@ -87,7 +83,7 @@ export const TaskItem = ({ task, onUpdate, onDelete, isActive, onSelect }: TaskI
             style={{ marginLeft: '8px', color: 'red' }}
             onClick={(e) => {
               e.stopPropagation()
-              handleUpdate()
+              setIsEditing(true)
             }}
           >
             編集
