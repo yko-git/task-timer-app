@@ -1,4 +1,5 @@
 import { Task, UpdateTaskDto } from '@/shared/types'
+import { useState } from 'react'
 
 interface TaskItemProps {
   task: Task
@@ -9,6 +10,9 @@ interface TaskItemProps {
 }
 
 export const TaskItem = ({ task, onUpdate, onDelete, isActive, onSelect }: TaskItemProps) => {
+  const [isEditing, setIsEditing] = useState(false) // 編集中かどうか
+  const [editedTitle, setEditedTitle] = useState(task.title) // 編集中のタイトルを一時保存
+
   const handleToggle = () => {
     onUpdate(task.id, { completed: !task.completed }) // 完了状態の真偽値を反転
   }
@@ -40,24 +44,66 @@ export const TaskItem = ({ task, onUpdate, onDelete, isActive, onSelect }: TaskI
         onChange={handleToggle}
         onClick={(e) => e.stopPropagation()} // チェックボックスのクリックが親要素に伝播しないようにする
       />
-      <span
-        style={{
-          marginLeft: '8px',
-          textDecoration: task.completed ? 'line-through' : 'none',
-          fontWeight: isActive ? 'bold' : 'normal',
-        }}
-      >
-        {task.title}
-      </span>
-      <button
-        style={{ marginLeft: '8px', color: 'red' }}
-        onClick={(e) => {
-          e.stopPropagation()
-          handleDelete()
-        }}
-      >
-        削除
-      </button>
+      {isEditing ? (
+        <>
+          <input
+            type="text"
+            value={editedTitle}
+            onChange={(e) => setEditedTitle(e.target.value)}
+            onClick={(e) => e.stopPropagation()}
+          />
+          <button
+            style={{ marginLeft: '8px', color: 'red' }}
+            onClick={(e) => {
+              e.stopPropagation()
+              onUpdate(task.id, { title: editedTitle })
+              setIsEditing(false)
+            }}
+          >
+            保存
+          </button>
+          <button
+            style={{ marginLeft: '8px', color: 'red' }}
+            onClick={(e) => {
+              e.stopPropagation()
+              setEditedTitle(task.title)
+              setIsEditing(false)
+            }}
+          >
+            キャンセル
+          </button>
+        </>
+      ) : (
+        <>
+          <span
+            style={{
+              marginLeft: '8px',
+              textDecoration: task.completed ? 'line-through' : 'none',
+              fontWeight: isActive ? 'bold' : 'normal',
+            }}
+          >
+            {task.title}
+          </span>
+          <button
+            style={{ marginLeft: '8px', color: 'red' }}
+            onClick={(e) => {
+              e.stopPropagation()
+              setIsEditing(true)
+            }}
+          >
+            編集
+          </button>
+          <button
+            style={{ marginLeft: '8px', color: 'red' }}
+            onClick={(e) => {
+              e.stopPropagation()
+              handleDelete()
+            }}
+          >
+            削除
+          </button>
+        </>
+      )}
     </li>
   )
 }
