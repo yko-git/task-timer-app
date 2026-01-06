@@ -8,6 +8,27 @@
 
 このアプリケーションは、Feature-based Architectureを採用し、タスク管理とポモドーロタイマーを統合したWebアプリです。React + TypeScript + MSWで構築されており、設計の明確性と保守性を重視しています。
 
+## 主な機能
+
+### タスク管理
+
+- ✅ タスクの追加・削除・完了
+- ✅ タスクの編集
+- ✅ フィルター機能（全て/未完了/完了）
+- ✅ 統計表示（完了率、タスク数）
+
+### ポモドーロタイマー
+
+- ✅ 25分作業 / 5分休憩の自動切り替え
+- ✅ タイマーの開始・停止・リセット
+- ✅ 進捗バーによる視覚的フィードバック
+
+### 統合機能
+
+- ✅ タスク選択でタイマー自動起動
+- ✅ 実行中タスクの強調表示
+- ✅ タイマーに実行中タスク名を表示
+
 ## 使用技術
 
 - **フロントエンド**: React 18, TypeScript
@@ -460,6 +481,45 @@ it('タスクを追加できる', async () => {
 ```
 
 MSWのテスト用サーバーと連携し、実際のAPI呼び出しに近い形でテスト。
+
+### タスク編集機能の実装
+
+インライン編集による直感的なUI：
+
+```typescript
+export const TaskItem = ({ task, onUpdate, ... }) => {
+  const [isEditing, setIsEditing] = useState(false)
+  const [editedTitle, setEditedTitle] = useState(task.title)
+
+  return (
+    <li>
+      {isEditing ? (
+        <>
+          <input
+            type="text"
+            value={editedTitle}
+            onChange={(e) => setEditedTitle(e.target.value)}
+            onClick={(e) => e.stopPropagation()}  // イベント伝播を防ぐ
+          />
+          <button onClick={handleSave}>保存</button>
+          <button onClick={handleCancel}>キャンセル</button>
+        </>
+      ) : (
+        <>
+          <span>{task.title}</span>
+          <button onClick={() => setIsEditing(true)}>編集</button>
+        </>
+      )}
+    </li>
+  )
+}
+```
+
+**設計のポイント：**
+
+- ローカルな状態は TaskItem 内で管理
+- 既存の `onUpdate` 関数を再利用
+- `stopPropagation` でイベント競合を回避
 
 # 学んだこと
 
