@@ -46,7 +46,12 @@ export const TaskItem = ({ task, onUpdate, onDelete, isActive, onSelect }: TaskI
       />
       {isEditing ? (
         <>
-          <input type="text" value={editedTitle} onChange={(e) => setEditedTitle(e.target.value)} />
+          <input
+            type="text"
+            value={editedTitle}
+            onChange={(e) => setEditedTitle(e.target.value)}
+            onClick={(e) => e.stopPropagation()}
+          />
           <button
             style={{ marginLeft: '8px', color: 'red' }}
             onClick={(e) => {
