@@ -1,9 +1,12 @@
 // Task 関連
+export type Priority = 'high' | 'medium' | 'low'
+
 export interface Task {
   id: string
   title: string
   completed: boolean
   createdAt: string
+  priority?: Priority
 }
 
 // Task型からidとcreatedAtを除いた型
