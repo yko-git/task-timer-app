@@ -1,4 +1,4 @@
-import { Task, CreateTaskDto, UpdateTaskDto } from '@/shared/types'
+import { Task, CreateTaskDto, UpdateTaskDto, Priority } from '@/shared/types'
 
 /**
  * タスクのバリデーション
@@ -108,4 +108,25 @@ export const getTaskStats = (tasks: Task[]): TaskStats => {
     active,
     completionRate: calculateCompletionRate(tasks),
   }
+}
+
+/**
+ * タスクの優先度を数値に変換
+ */
+const getPriorityValue = (priority?: Priority): number => {
+  if (priority === 'high') return 1
+  if (priority === 'medium') return 2
+  if (priority === 'low') return 3
+  return 999
+}
+
+/**
+ * タスクの優先度順にソート
+ */
+export const sortByPriority = (tasks: Task[]): Task[] => {
+  return tasks.sort((a, b) => {
+    const aValue = getPriorityValue(a.priority)
+    const bValue = getPriorityValue(b.priority)
+    return aValue - bValue
+  })
 }
