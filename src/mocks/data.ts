@@ -5,7 +5,9 @@ export interface Task {
   title: string
   completed: boolean
   createdAt: string
+  priority?: Priority
 }
+type Priority = 'high' | 'medium' | 'low'
 
 // LocalStorageのキー
 const STORAGE_KEY = 'mock_tasks'
@@ -17,9 +19,17 @@ const initialTasks: Task[] = [
     title: 'MSWのセットアップ',
     completed: true,
     createdAt: new Date().toISOString(),
+    priority: 'low',
   },
   {
     id: '2',
+    title: 'タスク機能の実装',
+    completed: false,
+    createdAt: new Date().toISOString(),
+    priority: 'high',
+  },
+  {
+    id: '3',
     title: 'タスク機能の実装',
     completed: false,
     createdAt: new Date().toISOString(),

@@ -1,4 +1,4 @@
-import { Task, UpdateTaskDto } from '@/shared/types'
+import { Task, UpdateTaskDto, Priority } from '@/shared/types'
 import { useState } from 'react'
 
 interface TaskItemProps {
@@ -7,6 +7,22 @@ interface TaskItemProps {
   onDelete: (id: string) => Promise<void>
   isActive: boolean
   onSelect: (taskId: string) => void
+}
+
+// 優先度ラベル
+const getPriorityLabel = (priority?: Priority): string => {
+  if (priority === 'high') return '高'
+  if (priority === 'medium') return '中'
+  if (priority === 'low') return '低'
+  return ''
+}
+
+// 優先度の色
+const getPriorityColor = (priority?: Priority): string => {
+  if (priority === 'high') return '#dc3545'
+  if (priority === 'medium') return '#ffc107'
+  if (priority === 'low') return '#28a745'
+  return ''
 }
 
 export const TaskItem = ({ task, onUpdate, onDelete, isActive, onSelect }: TaskItemProps) => {
@@ -84,6 +100,21 @@ export const TaskItem = ({ task, onUpdate, onDelete, isActive, onSelect }: TaskI
           >
             {task.title}
           </span>
+
+          {task.priority && (
+            <span
+              style={{
+                marginLeft: '8px',
+                padding: '2px 8px',
+                borderRadius: '4px',
+                fontSize: '12px',
+                color: 'white',
+                backgroundColor: getPriorityColor(task.priority),
+              }}
+            >
+              {getPriorityLabel(task.priority)}
+            </span>
+          )}
           <button
             style={{ marginLeft: '8px', color: 'red' }}
             onClick={(e) => {
