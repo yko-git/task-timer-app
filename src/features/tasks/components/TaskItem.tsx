@@ -28,6 +28,7 @@ const getPriorityColor = (priority?: Priority): string => {
 export const TaskItem = ({ task, onUpdate, onDelete, isActive, onSelect }: TaskItemProps) => {
   const [isEditing, setIsEditing] = useState(false) // 編集中かどうか
   const [editedTitle, setEditedTitle] = useState(task.title) // 編集中のタイトルを一時保存
+  const [editedPriority, setEditedPriority] = useState(task.priority) // 編集中の優先度を一時保存
 
   const handleToggle = () => {
     onUpdate(task.id, { completed: !task.completed }) // 完了状態の真偽値を反転
@@ -68,11 +69,22 @@ export const TaskItem = ({ task, onUpdate, onDelete, isActive, onSelect }: TaskI
             onChange={(e) => setEditedTitle(e.target.value)}
             onClick={(e) => e.stopPropagation()}
           />
+          <select
+            value={editedPriority || ''}
+            onChange={(e) => setEditedPriority(e.target.value as Priority | undefined)}
+            onClick={(e) => e.stopPropagation()}
+            style={{ marginLeft: '8px' }}
+          >
+            <option value="">なし</option>
+            <option value="high">高</option>
+            <option value="medium">中</option>
+            <option value="low">低</option>
+          </select>
           <button
             style={{ marginLeft: '8px', color: 'red' }}
             onClick={(e) => {
               e.stopPropagation()
-              onUpdate(task.id, { title: editedTitle })
+              onUpdate(task.id, { title: editedTitle, priority: editedPriority })
               setIsEditing(false)
             }}
           >
@@ -83,6 +95,7 @@ export const TaskItem = ({ task, onUpdate, onDelete, isActive, onSelect }: TaskI
             onClick={(e) => {
               e.stopPropagation()
               setEditedTitle(task.title)
+              setEditedPriority(task.priority)
               setIsEditing(false)
             }}
           >
