@@ -2,7 +2,7 @@
 
 ポモドーロタイマーとタスク管理を統合したアプリケーション
 
-**デモ:** https://task-timer-app-seven.vercel.app/
+**デモ:** https://task-timer-jlivmwhak-ykogits-projects.vercel.app/
 
 ## 概要
 
