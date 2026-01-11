@@ -14,6 +14,8 @@
 
 - ✅ タスクの追加・削除・完了
 - ✅ タスクの編集
+- ✅ タスクの優先度設定（高・中・低）
+- ✅ 優先度順の自動ソート
 - ✅ フィルター機能（全て/未完了/完了）
 - ✅ 統計表示（完了率、タスク数）
 
@@ -520,6 +522,47 @@ export const TaskItem = ({ task, onUpdate, ... }) => {
 - ローカルな状態は TaskItem 内で管理
 - 既存の `onUpdate` 関数を再利用
 - `stopPropagation` でイベント競合を回避
+
+### タスクの優先度機能
+
+優先度（高・中・低）による自動ソート：
+
+**Model層でのソートロジック：**
+
+```typescript
+// 優先度を数値に変換
+const getPriorityValue = (priority?: Priority): number => {
+  if (priority === 'high') return 1
+  if (priority === 'medium') return 2
+  if (priority === 'low') return 3
+  return 999 // 優先度なしは最後
+}
+
+// 優先度順にソート
+export const sortByPriority = (tasks: Task[]): Task[] => {
+  return [...tasks].sort((a, b) => {
+    const aValue = getPriorityValue(a.priority)
+    const bValue = getPriorityValue(b.priority)
+    return aValue - bValue
+  })
+}
+```
+
+**UI層での活用：**
+
+```typescript
+// TaskList.tsx
+const filteredTasks = useMemo(() => sortByPriority(filterTasks(tasks, filter)), [tasks, filter])
+```
+
+フィルター後に優先度順でソートすることで、常に整理された状態を保持。
+
+**設計のポイント：**
+
+- 純粋関数によるソートロジック（Model層）
+- useMemo による最適化
+- 色分けバッジによる視覚的フィードバック（赤・黄・緑）
+- TaskForm と TaskItem の両方で優先度を設定可能
 
 # 学んだこと
 

@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { Task, CreateTaskDto, UpdateTaskDto } from '@/shared/types'
-import { TaskFilter, filterTasks, getTaskStats } from '../models/task'
+import { TaskFilter, filterTasks, getTaskStats, sortByPriority } from '../models/task'
 import { TaskForm } from './TaskForm'
 import { TaskItem } from './TaskItem'
 
@@ -27,7 +27,7 @@ export const TaskList = ({
 }: TaskListProps) => {
   //   フィルター状態を管理
   const [filter, setFilter] = useState<TaskFilter>('all')
-  const filterdTasks = useMemo(() => filterTasks(tasks, filter), [tasks, filter])
+  const filterdTasks = useMemo(() => sortByPriority(filterTasks(tasks, filter)), [tasks, filter])
 
   //   タスクの統計情報を計算
   const stats = useMemo(() => getTaskStats(tasks), [tasks])

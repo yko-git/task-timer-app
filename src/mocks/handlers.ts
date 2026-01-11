@@ -33,6 +33,7 @@ export const handlers = [
       title: body.title,
       completed: body.completed || false,
       createdAt: new Date().toISOString(),
+      priority: body.priority,
     }
 
     const updatedTasks = [...tasks, newTask]
